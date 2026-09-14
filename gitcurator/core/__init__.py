@@ -1,0 +1,1 @@
+"""GitCurator Core Package."""

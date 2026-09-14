@@ -1,0 +1,43 @@
+# GitCurator Configuration
+
+# AI Generation Settings
+ai:
+  model: "gemini-3.6-flash"
+  temperature: 0.7
+  max_output_tokens: 2048
+
+# Profile README settings
+profile_readme:
+  target_repo: null  # null means defaults to username/username
+  commit_message: "chore: autonomous profile update by GitCurator [skip ci]"
+  tone: "professional yet personable, modern tech-forward"
+  include_sections:
+    - bio_summary
+    - tech_stack
+    - featured_projects
+    - recent_activity
+    - currently_learning_or_building
+    - contact_links
+  featured_repos_count: 6
+
+# Repository Hygiene & Cleanup settings
+cleanup:
+  stale_months_threshold: 6
+  exclude_repos: []  # e.g., ["username/important-archive"]
+  flag_missing_readme: true
+  flag_missing_license: true
+  flag_missing_description: true
+  flag_empty_repos: true
+  flag_unchanged_forks: true
+
+# Metadata Management settings
+metadata:
+  max_topics_per_repo: 6
+  auto_generate_topics: true
+  suggest_names: true
+
+# Safety and Automation Controls
+safety:
+  dry_run_default: false
+  require_confirmation_for_destructive: true  # archive or delete
+  log_file: "activity_log.json"
