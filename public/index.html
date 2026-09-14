@@ -3,272 +3,824 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GitCurator - AI GitHub Profile & Repo Manager</title>
+  <title>GitCurator Studio — Autonomous AI GitHub Profile & Repo Manager</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #090d16;
-      --card-bg: rgba(18, 26, 43, 0.7);
-      --card-border: rgba(255, 255, 255, 0.08);
+      --bg-dark: #080c14;
+      --bg-card: rgba(16, 24, 40, 0.75);
+      --border-card: rgba(255, 255, 255, 0.08);
       --accent-cyan: #00f2fe;
       --accent-purple: #7928ca;
       --accent-pink: #ff007a;
-      --text: #f0f4fc;
-      --text-dim: #94a3b8;
+      --accent-green: #10b981;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --font-code: 'JetBrains Mono', monospace;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Outfit', sans-serif;
-      background: var(--bg);
+      background: var(--bg-dark);
       color: var(--text);
       min-height: 100vh;
-      overflow-x: hidden;
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(121, 40, 202, 0.2) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(0, 242, 254, 0.15) 0px, transparent 50%);
+      display: flex;
+      flex-direction: column;
+      background-image:
+        radial-gradient(at 0% 0%, rgba(121, 40, 202, 0.25) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(0, 242, 254, 0.18) 0px, transparent 50%),
+        radial-gradient(at 50% 30%, rgba(255, 0, 122, 0.08) 0px, transparent 60%);
+      background-attachment: fixed;
     }
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 40px 20px;
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 36px;
+      border-bottom: 1px solid var(--border-card);
+      backdrop-filter: blur(16px);
+      background: rgba(8, 12, 20, 0.85);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-    header {
-      text-align: center;
-      margin-bottom: 50px;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+      color: white;
     }
-    .badge {
-      display: inline-block;
-      padding: 6px 16px;
-      border-radius: 999px;
-      background: rgba(0, 242, 254, 0.1);
-      border: 1px solid rgba(0, 242, 254, 0.3);
-      color: var(--accent-cyan);
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 16px;
+    .brand img {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+    }
+    .brand-text h2 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff, var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+    .brand-text p {
+      font-size: 0.72rem;
+      color: var(--text-muted);
       letter-spacing: 0.5px;
       text-transform: uppercase;
     }
-    h1 {
-      font-size: 3.5rem;
-      font-weight: 800;
-      letter-spacing: -1px;
-      background: linear-gradient(135deg, #fff 30%, var(--accent-cyan) 80%, var(--accent-purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 16px;
-    }
-    .subtitle {
-      font-size: 1.25rem;
-      color: var(--text-dim);
-      max-width: 650px;
-      margin: 0 auto 24px;
-      line-height: 1.6;
-    }
-    .hero-links {
+    .user-pill {
       display: flex;
-      gap: 16px;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-    .btn {
-      padding: 12px 28px;
-      border-radius: 12px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 1rem;
-      transition: all 0.2s ease;
-      display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-card);
+      border-radius: 999px;
+      font-size: 0.9rem;
     }
-    .btn-primary {
+    .user-pill img {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 30px 24px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 28px;
+      flex: 1;
+    }
+
+    /* Master AI Autopilot Bar */
+    .autopilot-banner {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, rgba(121, 40, 202, 0.35), rgba(255, 0, 122, 0.25));
+      border: 1px solid rgba(255, 0, 122, 0.4);
+      border-radius: 20px;
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 40px rgba(121, 40, 202, 0.2);
+    }
+    .autopilot-info h2 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .autopilot-info p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .btn-autopilot {
       background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
       color: white;
-      box-shadow: 0 8px 25px rgba(255, 0, 122, 0.3);
+      border: none;
+      padding: 14px 32px;
+      border-radius: 14px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 30px rgba(255, 0, 122, 0.4);
+      transition: all 0.25s ease;
     }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 30px rgba(255, 0, 122, 0.5);
+    .btn-autopilot:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 12px 40px rgba(255, 0, 122, 0.6);
     }
-    .btn-outline {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      color: var(--text);
-    }
-    .btn-outline:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.2);
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+
+    /* Left Control Deck */
+    .control-deck {
+      display: flex;
+      flex-direction: column;
       gap: 24px;
-      margin-bottom: 50px;
     }
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 30px;
+
+    /* Action Buttons Grid */
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+    .action-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       backdrop-filter: blur(16px);
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      transition: all 0.2s ease;
     }
-    .card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(0, 242, 254, 0.3);
+    .action-card:hover {
+      border-color: rgba(0, 242, 254, 0.4);
+      transform: translateY(-2px);
     }
-    .card-icon {
-      font-size: 2rem;
-      margin-bottom: 16px;
-      display: inline-block;
+    .action-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
     }
-    .card h3 {
-      font-size: 1.4rem;
-      margin-bottom: 12px;
+    .action-icon {
+      font-size: 1.5rem;
+      width: 42px;
+      height: 42px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .action-header h3 {
+      font-size: 1.15rem;
       font-weight: 700;
     }
-    .card p {
-      color: var(--text-dim);
-      font-size: 0.98rem;
-      line-height: 1.6;
+    .action-card p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.5;
       margin-bottom: 16px;
+      flex: 1;
     }
-    .code-pill {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-      background: rgba(0, 0, 0, 0.4);
-      padding: 6px 12px;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    .btn-action {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border-card);
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .btn-action:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+    .btn-action.primary {
+      background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(121, 40, 202, 0.4));
+      border-color: rgba(0, 242, 254, 0.5);
       color: var(--accent-cyan);
-      display: inline-block;
     }
-    .terminal-section {
+    .btn-action.primary:hover {
+      background: linear-gradient(135deg, rgba(0, 242, 254, 0.3), rgba(121, 40, 202, 0.6));
+    }
+
+    /* Interactive Bash Section */
+    .bash-card {
       background: #0d1117;
       border: 1px solid #30363d;
       border-radius: 16px;
-      padding: 24px;
-      font-family: 'JetBrains Mono', monospace;
-      margin-bottom: 50px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
     }
-    .terminal-header {
+    .bash-header {
+      background: #161b22;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #30363d;
+    }
+    .bash-dots {
       display: flex;
       gap: 8px;
-      margin-bottom: 16px;
-      align-items: center;
     }
     .dot { width: 12px; height: 12px; border-radius: 50%; }
-    .dot-red { background: #ff5f56; }
-    .dot-yellow { background: #ffbd2e; }
-    .dot-green { background: #27c93f; }
-    .terminal-title { margin-left: auto; color: #8b949e; font-size: 0.85rem; }
-    .terminal-content {
-      color: #58a6ff;
-      line-height: 1.7;
-      font-size: 0.95rem;
+    .dot-r { background: #ff5f56; }
+    .dot-y { background: #ffbd2e; }
+    .dot-g { background: #27c93f; }
+    .bash-title {
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+      color: #8b949e;
     }
-    .terminal-comment { color: #8b949e; }
-    footer {
-      text-align: center;
-      color: var(--text-dim);
+    .bash-screen {
+      background: #090d13;
+      padding: 18px 20px;
+      font-family: var(--font-code);
+      font-size: 0.88rem;
+      min-height: 200px;
+      max-height: 320px;
+      overflow-y: auto;
+      color: #58a6ff;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+    .bash-input-row {
+      display: flex;
+      border-top: 1px solid #30363d;
+      background: #161b22;
+    }
+    .bash-prompt {
+      padding: 12px 16px;
+      color: var(--accent-cyan);
+      font-family: var(--font-code);
+      font-weight: 700;
+      user-select: none;
+    }
+    .bash-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #f0f6fc;
+      font-family: var(--font-code);
       font-size: 0.9rem;
-      padding: 30px 0;
-      border-top: 1px solid var(--card-border);
+      outline: none;
+      padding: 12px 0;
+    }
+    .bash-run-btn {
+      background: #238636;
+      border: none;
+      color: white;
+      font-family: var(--font-code);
+      font-weight: 600;
+      padding: 0 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .bash-run-btn:hover { background: #2ea043; }
+
+    /* Quick Scripts Pill Bar */
+    .quick-pills {
+      display: flex;
+      gap: 8px;
+      padding: 8px 16px;
+      background: #11161f;
+      border-top: 1px solid #30363d;
+      overflow-x: auto;
+    }
+    .quick-pill {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #8b949e;
+      font-family: var(--font-code);
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .quick-pill:hover {
+      color: var(--accent-cyan);
+      border-color: var(--accent-cyan);
+    }
+
+    /* Right Sidebar: AI Chat Assistant */
+    .assistant-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 180px);
+      position: sticky;
+      top: 100px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+    }
+    .assistant-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border-card);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .ai-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+    }
+    .assistant-title h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+    .assistant-title p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .chat-body {
+      flex: 1;
+      padding: 18px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .chat-msg {
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      max-width: 90%;
+    }
+    .chat-msg.assistant {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-card);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+    .chat-msg.user {
+      background: linear-gradient(135deg, var(--accent-purple), #4f46e5);
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+    .chat-input-row {
+      padding: 14px;
+      border-top: 1px solid var(--border-card);
+      display: flex;
+      gap: 8px;
+      background: rgba(8, 12, 20, 0.9);
+    }
+    .chat-input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 10px 14px;
+      color: white;
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .chat-input:focus {
+      border-color: var(--accent-cyan);
+    }
+    .chat-send-btn {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      border: none;
+      color: white;
+      border-radius: 12px;
+      padding: 0 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Result Modal / Inspection Drawer */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-window {
+      background: #0f172a;
+      border: 1px solid var(--border-card);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 800px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+    }
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-card);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      font-family: var(--font-code);
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* Responsive */
+    @media (max-width: 1080px) {
+      .container { grid-template-columns: 1fr; }
+      .assistant-card { height: 500px; position: static; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Top Navbar -->
+  <nav class="navbar">
+    <a href="#" class="brand">
+      <img src="/logo.png" alt="GitCurator Logo" onerror="this.src='https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'">
+      <div class="brand-text">
+        <h2>GitCurator Studio</h2>
+        <p>Cleaner Repos • Better Profiles • Automatically</p>
+      </div>
+    </a>
+
+    <div class="user-pill">
+      <div class="status-dot"></div>
+      <img id="user-avatar" src="https://github.com/identicons/yashrajds.png" alt="avatar">
+      <span id="user-name">@yashrajds</span>
+    </div>
+  </nav>
+
   <div class="container">
-    <header>
-      <div class="badge">Powered by Google Gemini 3.6 & GitHub API</div>
-      <h1>GitCurator</h1>
-      <p class="subtitle">Autonomous AI-powered GitHub profile manager and repository curator that keeps your developer presence modern, fresh, and impactful without manual toil.</p>
-      <div class="hero-links">
-        <a href="https://github.com/yashrajds/GitCurator" target="_blank" class="btn btn-primary">
-          ⭐ View on GitHub
-        </a>
-        <a href="#quickstart" class="btn btn-outline">
-          🚀 Quick Commands
-        </a>
+    
+    <!-- Autopilot Banner -->
+    <div class="autopilot-banner">
+      <div class="autopilot-info">
+        <h2>⚡ Automate Everything According to AI</h2>
+        <p>One-click master autopilot: audits all repos, enhances missing metadata, and updates your profile README.</p>
       </div>
-    </header>
+      <button class="btn-autopilot" id="btn-autopilot" onclick="runAutopilot()">
+        <span>🚀</span> Run Full AI Autopilot
+      </button>
+    </div>
 
-    <div class="grid">
-      <div class="card">
-        <div class="card-icon">✨</div>
-        <h3>Profile README Auto-Updater</h3>
-        <p>Gathers pinned repos, top languages, and recent commit events to synthesize a modern developer portfolio README with shields badges and live stats.</p>
-        <span class="code-pill">gitcurator update-readme</span>
+    <!-- Left Control Deck -->
+    <div class="control-deck">
+      
+      <!-- Action Cards -->
+      <div class="actions-grid">
+        
+        <!-- Profile README -->
+        <div class="action-card">
+          <div class="action-header">
+            <div class="action-icon">✨</div>
+            <div>
+              <h3>Profile README</h3>
+              <span style="font-size: 0.75rem; color: var(--accent-cyan)">AI Auto-Updater</span>
+            </div>
+          </div>
+          <p>Scans pinned repositories, top languages, and recent commits to draft a professional portfolio README.</p>
+          <div class="action-buttons">
+            <button class="btn-action" onclick="runAction('/api/update-readme?dry_run=true', 'Profile README Preview')">Preview</button>
+            <button class="btn-action primary" onclick="runAction('/api/update-readme?dry_run=false', 'Publish Profile README')">Publish Live</button>
+          </div>
+        </div>
+
+        <!-- Hygiene Audit -->
+        <div class="action-card">
+          <div class="action-header">
+            <div class="action-icon">🧹</div>
+            <div>
+              <h3>Hygiene Audit</h3>
+              <span style="font-size: 0.75rem; color: #ffbd2e">Repo Cleaner</span>
+            </div>
+          </div>
+          <p>Identifies stale repositories (>6mo inactive), empty projects, and repos missing README, LICENSE, or descriptions.</p>
+          <div class="action-buttons">
+            <button class="btn-action primary" onclick="runAction('/api/audit', 'Repository Hygiene Audit')">Run Audit</button>
+            <button class="btn-action" onclick="executeBash('gitcurator cleanup --dry-run')">Dry-Run Clean</button>
+          </div>
+        </div>
+
+        <!-- AI Metadata & Topics -->
+        <div class="action-card">
+          <div class="action-header">
+            <div class="action-icon">🏷️</div>
+            <div>
+              <h3>Metadata Manager</h3>
+              <span style="font-size: 0.75rem; color: var(--accent-pink)">Smart Topics</span>
+            </div>
+          </div>
+          <p>Generates punchy repo descriptions and relevant discoverability topics, suggesting clearer project names.</p>
+          <div class="action-buttons">
+            <button class="btn-action" onclick="promptMetadata(true)">Preview Repo</button>
+            <button class="btn-action primary" onclick="promptMetadata(false)">Apply Live</button>
+          </div>
+        </div>
+
+        <!-- Changelog & SemVer -->
+        <div class="action-card">
+          <div class="action-header">
+            <div class="action-icon">📦</div>
+            <div>
+              <h3>Changelog & SemVer</h3>
+              <span style="font-size: 0.75rem; color: var(--accent-green)">Release AI</span>
+            </div>
+          </div>
+          <p>Inspects commit deltas since the latest release and recommends SemVer bumps (major, minor, patch).</p>
+          <div class="action-buttons">
+            <button class="btn-action primary" onclick="promptChangelog()">Generate</button>
+          </div>
+        </div>
+
       </div>
 
-      <div class="card">
-        <div class="card-icon">🧹</div>
-        <h3>Repo Hygiene & Cleanup</h3>
-        <p>Scans for stale repositories (>6mo inactive), empty repos, and unmaintained forks. Flags missing READMEs, descriptions, or licenses with dry-run safety.</p>
-        <span class="code-pill">gitcurator audit / cleanup</span>
+      <!-- Embedded Bash Terminal -->
+      <div class="bash-card">
+        <div class="bash-header">
+          <div class="bash-dots">
+            <div class="dot dot-r"></div>
+            <div class="dot dot-y"></div>
+            <div class="dot dot-g"></div>
+          </div>
+          <div class="bash-title">gitcurator — interactive bash shell</div>
+          <button style="background:none;border:none;color:#8b949e;cursor:pointer;" onclick="clearBash()">Clear</button>
+        </div>
+        <div class="quick-pills">
+          <span class="quick-pill" onclick="executeBash('gitcurator --help')">gitcurator --help</span>
+          <span class="quick-pill" onclick="executeBash('gitcurator audit')">gitcurator audit</span>
+          <span class="quick-pill" onclick="executeBash('gitcurator update-readme --dry-run')">gitcurator update-readme --dry-run</span>
+          <span class="quick-pill" onclick="executeBash('gitcurator update-metadata SkillSwapMVP --dry-run')">gitcurator update-metadata</span>
+          <span class="quick-pill" onclick="executeBash('gitcurator logs')">gitcurator logs</span>
+        </div>
+        <div class="bash-screen" id="bash-output">GitCurator CLI Studio v0.1.0 [Ready]
+Type any command or select a quick script above to execute.
+$ </div>
+        <div class="bash-input-row">
+          <span class="bash-prompt">$</span>
+          <input type="text" class="bash-input" id="bash-input" placeholder="e.g. gitcurator audit or git status" onkeydown="if(event.key==='Enter') runBashInput()">
+          <button class="bash-run-btn" onclick="runBashInput()">Run</button>
+        </div>
       </div>
 
-      <div class="card">
-        <div class="card-icon">🏷️</div>
-        <h3>AI Metadata & Topics</h3>
-        <p>Analyzes repository code to generate punchy descriptions (under 140 chars) and discoverability topics/tags, suggesting cleaner repo names when ambiguous.</p>
-        <span class="code-pill">gitcurator update-metadata</span>
-      </div>
+    </div>
 
-      <div class="card">
-        <div class="card-icon">📦</div>
-        <h3>Changelogs & SemVer</h3>
-        <p>Inspects commit messages since the last release to recommend SemVer bumps (major/minor/patch) and draft Keep-a-Changelog release notes automatically.</p>
-        <span class="code-pill">gitcurator changelog &lt;repo&gt;</span>
+    <!-- Right Sidebar: AI Chatbot Assistant -->
+    <div class="assistant-card">
+      <div class="assistant-header">
+        <div class="ai-avatar">🤖</div>
+        <div class="assistant-title">
+          <h3>Curator AI Assistant</h3>
+          <p>Software expert & automation copilot</p>
+        </div>
       </div>
-
-      <div class="card">
-        <div class="card-icon">🛡️</div>
-        <h3>Safety & Dry-Run by Default</h3>
-        <p>Every mutation supports <code>--dry-run</code> and requires confirmation before destructive actions. Full audit trail recorded in <code>activity_log.json</code>.</p>
-        <span class="code-pill">gitcurator logs</span>
+      <div class="chat-body" id="chat-messages">
+        <div class="chat-msg assistant">
+          👋 Hi! I'm your <b>GitCurator AI Assistant</b>. I know everything about your profile, repositories, and this software. 
+          <br><br>
+          You can ask me to analyze your projects, suggest SemVer releases, explain cleanup options, or run commands for you!
+        </div>
       </div>
-
-      <div class="card">
-        <div class="card-icon">⏱️</div>
-        <h3>Scheduled Automation</h3>
-        <p>Ready-to-deploy GitHub Actions cron workflow to keep your profile updated automatically on a weekly or daily schedule without local intervention.</p>
-        <span class="code-pill">.github/workflows</span>
+      <div class="chat-input-row">
+        <input type="text" class="chat-input" id="chat-input" placeholder="Ask anything about your repos or software..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+        <button class="chat-send-btn" onclick="sendChatMessage()">Send</button>
       </div>
     </div>
 
-    <div id="quickstart" class="terminal-section">
-      <div class="terminal-header">
-        <div class="dot dot-red"></div>
-        <div class="dot dot-yellow"></div>
-        <div class="dot dot-green"></div>
-        <span class="terminal-title">bash — gitcurator CLI</span>
-      </div>
-      <div class="terminal-content">
-        <p class="terminal-comment"># Install GitCurator locally</p>
-        <p>$ pip install -r requirements.txt && pip install -e .</p>
-        <br>
-        <p class="terminal-comment"># 1. Audit all your GitHub repositories</p>
-        <p>$ gitcurator audit --threshold-months 6</p>
-        <br>
-        <p class="terminal-comment"># 2. Preview generated profile README with Gemini AI</p>
-        <p>$ gitcurator update-readme --dry-run</p>
-        <br>
-        <p class="terminal-comment"># 3. Enhance repository metadata & discoverability tags</p>
-        <p>$ gitcurator update-metadata &lt;repo-name&gt; --dry-run</p>
-        <br>
-        <p class="terminal-comment"># 4. Generate Changelog & SemVer release notes</p>
-        <p>$ gitcurator changelog &lt;repo-name&gt; --create-release</p>
-      </div>
-    </div>
-
-    <footer>
-      <p>Built with ❤️ for developers by <b>Yashraj Deshmukh</b> • Powered by Google Gemini & GitHub API</p>
-    </footer>
   </div>
+
+  <!-- Result Modal -->
+  <div class="modal-backdrop" id="modal-backdrop">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3 id="modal-title" style="font-weight: 700;">Result</h3>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <script>
+    // Load initial user stats
+    fetch('/api/status')
+      .then(res => res.json())
+      .then(data => {
+        if(data.username) {
+          document.getElementById('user-name').innerText = `@${data.username}`;
+          if(data.avatar_url) document.getElementById('user-avatar').src = data.avatar_url;
+        }
+      })
+      .catch(() => {});
+
+    // Modal helpers
+    function openModal(title, content) {
+      document.getElementById('modal-title').innerText = title;
+      document.getElementById('modal-body').innerText = typeof content === 'object' ? JSON.stringify(content, null, 2) : content;
+      document.getElementById('modal-backdrop').classList.add('open');
+    }
+    function closeModal() {
+      document.getElementById('modal-backdrop').classList.remove('open');
+    }
+
+    // Bash execution
+    function appendBash(text) {
+      const out = document.getElementById('bash-output');
+      out.textContent += text + '\n$ ';
+      out.scrollTop = out.scrollHeight;
+    }
+    function clearBash() {
+      document.getElementById('bash-output').textContent = '$ ';
+    }
+    function executeBash(cmd) {
+      const out = document.getElementById('bash-output');
+      out.textContent += cmd + '\nExecuting...\n';
+      out.scrollTop = out.scrollHeight;
+      
+      fetch('/api/bash', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ command: cmd })
+      })
+      .then(res => res.json())
+      .then(data => {
+        let resText = data.output || '';
+        if(data.error) resText += (resText ? '\n' : '') + data.error;
+        appendBash(resText || '(Done with code 0)');
+      })
+      .catch(err => appendBash('Execution error: ' + err));
+    }
+    function runBashInput() {
+      const inp = document.getElementById('bash-input');
+      const val = inp.value.trim();
+      if(!val) return;
+      inp.value = '';
+      executeBash(val);
+    }
+
+    // Actions
+    function runAction(url, title) {
+      openModal(title, "Running action with AI... please wait.");
+      fetch(url, { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+          if(data.readme) {
+            openModal(title, data.readme);
+          } else {
+            openModal(title, data);
+          }
+        })
+        .catch(err => openModal(title, "Error: " + err));
+    }
+
+    function promptMetadata(dryRun) {
+      const repo = prompt("Enter the repository name to enhance (e.g. SkillSwapMVP):", "SkillSwapMVP");
+      if(!repo) return;
+      openModal("Metadata Manager", `Analyzing ${repo} with Gemini AI...`);
+      fetch(`/api/update-metadata?dry_run=${dryRun}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ repo: repo, auto_apply: !dryRun })
+      })
+      .then(res => res.json())
+      .then(data => openModal(`Metadata for ${repo}`, data))
+      .catch(err => openModal("Error", err));
+    }
+
+    function promptChangelog() {
+      const repo = prompt("Enter the repository name for changelog (e.g. Sudoku-Master):", "Sudoku-Master");
+      if(!repo) return;
+      openModal("Changelog Generator", `Analyzing git commits & tags for ${repo}...`);
+      fetch(`/api/changelog?dry_run=true`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ repo: repo })
+      })
+      .then(res => res.json())
+      .then(data => openModal(`Changelog: ${repo} (${data.suggested_version})`, data.changelog || data))
+      .catch(err => openModal("Error", err));
+    }
+
+    // Master Autopilot
+    function runAutopilot() {
+      const btn = document.getElementById('btn-autopilot');
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳</span> AI Autopilot Running...';
+      openModal("⚡ Master AI Autopilot", "Initiating end-to-end autonomous scan...\n1. Synthesizing Profile README\n2. Auditing repository hygiene\n3. Enriching repo metadata\n\nPlease wait...");
+
+      fetch('/api/automate-all', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+          btn.disabled = false;
+          btn.innerHTML = '<span>🚀</span> Run Full AI Autopilot';
+          openModal("⚡ AI Autopilot Completed", data);
+        })
+        .catch(err => {
+          btn.disabled = false;
+          btn.innerHTML = '<span>🚀</span> Run Full AI Autopilot';
+          openModal("Autopilot Error", err);
+        });
+    }
+
+    // Chatbot Assistant
+    function sendChatMessage() {
+      const inp = document.getElementById('chat-input');
+      const val = inp.value.trim();
+      if(!val) return;
+      inp.value = '';
+
+      const container = document.getElementById('chat-messages');
+      const userMsg = document.createElement('div');
+      userMsg.className = 'chat-msg user';
+      userMsg.innerText = val;
+      container.appendChild(userMsg);
+
+      const loadingMsg = document.createElement('div');
+      loadingMsg.className = 'chat-msg assistant';
+      loadingMsg.innerText = 'Thinking...';
+      container.appendChild(loadingMsg);
+      container.scrollTop = container.scrollHeight;
+
+      fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: val })
+      })
+      .then(res => res.json())
+      .then(data => {
+        loadingMsg.innerHTML = (data.reply || 'Sorry, I could not process that request.')
+          .replace(/\n/g, '<br>')
+          .replace(/`([^`]+)`/g, '<code style="background:rgba(0,0,0,0.3);padding:2px 4px;border-radius:4px;color:#00f2fe;">$1</code>');
+        container.scrollTop = container.scrollHeight;
+      })
+      .catch(err => {
+        loadingMsg.innerText = 'Error: ' + err;
+      });
+    }
+  </script>
 </body>
 </html>
