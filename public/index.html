@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
       --bg-dark: #080c14;
@@ -40,7 +42,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 18px 36px;
+      padding: 16px 36px;
       border-bottom: 1px solid var(--border-card);
       backdrop-filter: blur(16px);
       background: rgba(8, 12, 20, 0.85);
@@ -125,12 +127,12 @@
       box-shadow: 0 10px 40px rgba(121, 40, 202, 0.2);
     }
     .autopilot-info h2 {
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       font-weight: 800;
       margin-bottom: 6px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
     .autopilot-info p {
       color: var(--text-muted);
@@ -140,9 +142,9 @@
       background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
       color: white;
       border: none;
-      padding: 14px 32px;
+      padding: 14px 28px;
       border-radius: 14px;
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
       display: flex;
@@ -190,8 +192,7 @@
       gap: 12px;
       margin-bottom: 10px;
     }
-    .action-icon {
-      font-size: 1.5rem;
+    .action-icon-wrap {
       width: 42px;
       height: 42px;
       background: rgba(255, 255, 255, 0.05);
@@ -199,6 +200,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      color: var(--accent-cyan);
     }
     .action-header h3 {
       font-size: 1.15rem;
@@ -226,7 +228,10 @@
       background: rgba(255, 255, 255, 0.05);
       color: white;
       transition: all 0.2s;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
     .btn-action:hover {
       background: rgba(255, 255, 255, 0.12);
@@ -270,6 +275,9 @@
       font-family: var(--font-code);
       font-size: 0.85rem;
       color: #8b949e;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .bash-screen {
       background: #090d13;
@@ -313,6 +321,9 @@
       font-weight: 600;
       padding: 0 20px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
       transition: background 0.2s;
     }
     .bash-run-btn:hover { background: #2ea043; }
@@ -357,7 +368,7 @@
       overflow: hidden;
     }
     .assistant-header {
-      padding: 18px 20px;
+      padding: 16px 20px;
       border-bottom: 1px solid var(--border-card);
       display: flex;
       align-items: center;
@@ -372,7 +383,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.3rem;
+      color: white;
       box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
     }
     .assistant-title h3 {
@@ -439,6 +450,9 @@
       padding: 0 16px;
       font-weight: 600;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     /* Result Modal / Inspection Drawer */
@@ -486,9 +500,12 @@
       background: transparent;
       border: none;
       color: var(--text-muted);
-      font-size: 1.5rem;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+    .close-btn:hover { color: white; }
 
     /* Responsive */
     @media (max-width: 1080px) {
@@ -521,11 +538,11 @@
     <!-- Autopilot Banner -->
     <div class="autopilot-banner">
       <div class="autopilot-info">
-        <h2>⚡ Automate Everything According to AI</h2>
+        <h2><i data-lucide="sparkles" style="color:#00f2fe;"></i> Automate Everything According to AI</h2>
         <p>One-click master autopilot: audits all repos, enhances missing metadata, and updates your profile README.</p>
       </div>
       <button class="btn-autopilot" id="btn-autopilot" onclick="runAutopilot()">
-        <span>🚀</span> Run Full AI Autopilot
+        <i data-lucide="zap"></i> Run Full AI Autopilot
       </button>
     </div>
 
@@ -538,7 +555,7 @@
         <!-- Profile README -->
         <div class="action-card">
           <div class="action-header">
-            <div class="action-icon">✨</div>
+            <div class="action-icon-wrap"><i data-lucide="file-text"></i></div>
             <div>
               <h3>Profile README</h3>
               <span style="font-size: 0.75rem; color: var(--accent-cyan)">AI Auto-Updater</span>
@@ -546,15 +563,19 @@
           </div>
           <p>Scans pinned repositories, top languages, and recent commits to draft a professional portfolio README.</p>
           <div class="action-buttons">
-            <button class="btn-action" onclick="runAction('/api/update-readme?dry_run=true', 'Profile README Preview')">Preview</button>
-            <button class="btn-action primary" onclick="runAction('/api/update-readme?dry_run=false', 'Publish Profile README')">Publish Live</button>
+            <button class="btn-action" onclick="runAction('/api/update-readme?dry_run=true', 'Profile README Preview')">
+              <i data-lucide="eye" style="width:16px;height:16px;"></i> Preview
+            </button>
+            <button class="btn-action primary" onclick="runAction('/api/update-readme?dry_run=false', 'Publish Profile README')">
+              <i data-lucide="upload-cloud" style="width:16px;height:16px;"></i> Publish Live
+            </button>
           </div>
         </div>
 
         <!-- Hygiene Audit -->
         <div class="action-card">
           <div class="action-header">
-            <div class="action-icon">🧹</div>
+            <div class="action-icon-wrap" style="color: #ffbd2e;"><i data-lucide="shield-check"></i></div>
             <div>
               <h3>Hygiene Audit</h3>
               <span style="font-size: 0.75rem; color: #ffbd2e">Repo Cleaner</span>
@@ -562,15 +583,19 @@
           </div>
           <p>Identifies stale repositories (>6mo inactive), empty projects, and repos missing README, LICENSE, or descriptions.</p>
           <div class="action-buttons">
-            <button class="btn-action primary" onclick="runAction('/api/audit', 'Repository Hygiene Audit')">Run Audit</button>
-            <button class="btn-action" onclick="executeBash('gitcurator cleanup --dry-run')">Dry-Run Clean</button>
+            <button class="btn-action primary" onclick="runAction('/api/audit', 'Repository Hygiene Audit')">
+              <i data-lucide="search" style="width:16px;height:16px;"></i> Run Audit
+            </button>
+            <button class="btn-action" onclick="executeBash('gitcurator cleanup --dry-run')">
+              <i data-lucide="trash-2" style="width:16px;height:16px;"></i> Dry-Run Clean
+            </button>
           </div>
         </div>
 
         <!-- AI Metadata & Topics -->
         <div class="action-card">
           <div class="action-header">
-            <div class="action-icon">🏷️</div>
+            <div class="action-icon-wrap" style="color: var(--accent-pink);"><i data-lucide="tags"></i></div>
             <div>
               <h3>Metadata Manager</h3>
               <span style="font-size: 0.75rem; color: var(--accent-pink)">Smart Topics</span>
@@ -578,15 +603,19 @@
           </div>
           <p>Generates punchy repo descriptions and relevant discoverability topics, suggesting clearer project names.</p>
           <div class="action-buttons">
-            <button class="btn-action" onclick="promptMetadata(true)">Preview Repo</button>
-            <button class="btn-action primary" onclick="promptMetadata(false)">Apply Live</button>
+            <button class="btn-action" onclick="promptMetadata(true)">
+              <i data-lucide="eye" style="width:16px;height:16px;"></i> Preview Repo
+            </button>
+            <button class="btn-action primary" onclick="promptMetadata(false)">
+              <i data-lucide="check" style="width:16px;height:16px;"></i> Apply Live
+            </button>
           </div>
         </div>
 
         <!-- Changelog & SemVer -->
         <div class="action-card">
           <div class="action-header">
-            <div class="action-icon">📦</div>
+            <div class="action-icon-wrap" style="color: var(--accent-green);"><i data-lucide="git-pull-request"></i></div>
             <div>
               <h3>Changelog & SemVer</h3>
               <span style="font-size: 0.75rem; color: var(--accent-green)">Release AI</span>
@@ -594,7 +623,9 @@
           </div>
           <p>Inspects commit deltas since the latest release and recommends SemVer bumps (major, minor, patch).</p>
           <div class="action-buttons">
-            <button class="btn-action primary" onclick="promptChangelog()">Generate</button>
+            <button class="btn-action primary" onclick="promptChangelog()">
+              <i data-lucide="git-commit" style="width:16px;height:16px;"></i> Generate
+            </button>
           </div>
         </div>
 
@@ -608,8 +639,10 @@
             <div class="dot dot-y"></div>
             <div class="dot dot-g"></div>
           </div>
-          <div class="bash-title">gitcurator — interactive bash shell</div>
-          <button style="background:none;border:none;color:#8b949e;cursor:pointer;" onclick="clearBash()">Clear</button>
+          <div class="bash-title"><i data-lucide="terminal" style="width:16px;height:16px;"></i> gitcurator — interactive bash shell</div>
+          <button style="background:none;border:none;color:#8b949e;cursor:pointer;display:flex;align-items:center;gap:4px;" onclick="clearBash()">
+            <i data-lucide="rotate-ccw" style="width:14px;height:14px;"></i> Clear
+          </button>
         </div>
         <div class="quick-pills">
           <span class="quick-pill" onclick="executeBash('gitcurator --help')">gitcurator --help</span>
@@ -624,7 +657,7 @@ $ </div>
         <div class="bash-input-row">
           <span class="bash-prompt">$</span>
           <input type="text" class="bash-input" id="bash-input" placeholder="e.g. gitcurator audit or git status" onkeydown="if(event.key==='Enter') runBashInput()">
-          <button class="bash-run-btn" onclick="runBashInput()">Run</button>
+          <button class="bash-run-btn" onclick="runBashInput()"><i data-lucide="play" style="width:14px;height:14px;"></i> Run</button>
         </div>
       </div>
 
@@ -633,7 +666,7 @@ $ </div>
     <!-- Right Sidebar: AI Chatbot Assistant -->
     <div class="assistant-card">
       <div class="assistant-header">
-        <div class="ai-avatar">🤖</div>
+        <div class="ai-avatar"><i data-lucide="bot" style="width:22px;height:22px;"></i></div>
         <div class="assistant-title">
           <h3>Curator AI Assistant</h3>
           <p>Software expert & automation copilot</p>
@@ -641,14 +674,14 @@ $ </div>
       </div>
       <div class="chat-body" id="chat-messages">
         <div class="chat-msg assistant">
-          👋 Hi! I'm your <b>GitCurator AI Assistant</b>. I know everything about your profile, repositories, and this software. 
+          Welcome! I am your <b>GitCurator AI Assistant</b>. I know everything about your profile, repositories, and this software. 
           <br><br>
-          You can ask me to analyze your projects, suggest SemVer releases, explain cleanup options, or run commands for you!
+          You can ask me to analyze your projects, suggest SemVer releases, explain cleanup options, or run commands for you.
         </div>
       </div>
       <div class="chat-input-row">
         <input type="text" class="chat-input" id="chat-input" placeholder="Ask anything about your repos or software..." onkeydown="if(event.key==='Enter') sendChatMessage()">
-        <button class="chat-send-btn" onclick="sendChatMessage()">Send</button>
+        <button class="chat-send-btn" onclick="sendChatMessage()"><i data-lucide="send" style="width:16px;height:16px;"></i></button>
       </div>
     </div>
 
@@ -659,13 +692,16 @@ $ </div>
     <div class="modal-window">
       <div class="modal-header">
         <h3 id="modal-title" style="font-weight: 700;">Result</h3>
-        <button class="close-btn" onclick="closeModal()">&times;</button>
+        <button class="close-btn" onclick="closeModal()"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
       </div>
       <div class="modal-body" id="modal-body"></div>
     </div>
   </div>
 
   <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
     // Load initial user stats
     fetch('/api/status')
       .then(res => res.json())
@@ -680,8 +716,17 @@ $ </div>
     // Modal helpers
     function openModal(title, content) {
       document.getElementById('modal-title').innerText = title;
-      document.getElementById('modal-body').innerText = typeof content === 'object' ? JSON.stringify(content, null, 2) : content;
+      if (typeof content === 'object' && content !== null) {
+        if (content.error) {
+          document.getElementById('modal-body').innerText = "Notice / Error: " + content.error;
+        } else {
+          document.getElementById('modal-body').innerText = JSON.stringify(content, null, 2);
+        }
+      } else {
+        document.getElementById('modal-body').innerText = content || "No content returned.";
+      }
       document.getElementById('modal-backdrop').classList.add('open');
+      lucide.createIcons();
     }
     function closeModal() {
       document.getElementById('modal-backdrop').classList.remove('open');
@@ -706,11 +751,19 @@ $ </div>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ command: cmd })
       })
-      .then(res => res.json())
+      .then(res => {
+        return res.text().then(text => {
+          try {
+            return JSON.parse(text);
+          } catch(e) {
+            return { output: text, error: null };
+          }
+        });
+      })
       .then(data => {
         let resText = data.output || '';
         if(data.error) resText += (resText ? '\n' : '') + data.error;
-        appendBash(resText || '(Done with code 0)');
+        appendBash(resText || '(Command finished)');
       })
       .catch(err => appendBash('Execution error: ' + err));
     }
@@ -726,7 +779,15 @@ $ </div>
     function runAction(url, title) {
       openModal(title, "Running action with AI... please wait.");
       fetch(url, { method: 'POST' })
-        .then(res => res.json())
+        .then(res => {
+          return res.text().then(text => {
+            try {
+              return JSON.parse(text);
+            } catch(e) {
+              return { error: text };
+            }
+          });
+        })
         .then(data => {
           if(data.readme) {
             openModal(title, data.readme);
@@ -769,19 +830,22 @@ $ </div>
     function runAutopilot() {
       const btn = document.getElementById('btn-autopilot');
       btn.disabled = true;
-      btn.innerHTML = '<span>⏳</span> AI Autopilot Running...';
-      openModal("⚡ Master AI Autopilot", "Initiating end-to-end autonomous scan...\n1. Synthesizing Profile README\n2. Auditing repository hygiene\n3. Enriching repo metadata\n\nPlease wait...");
+      btn.innerHTML = '<i data-lucide="loader-2"></i> AI Autopilot Running...';
+      lucide.createIcons();
+      openModal("Master AI Autopilot", "Initiating end-to-end autonomous scan...\n1. Synthesizing Profile README\n2. Auditing repository hygiene\n3. Enriching repo metadata\n\nPlease wait...");
 
       fetch('/api/automate-all', { method: 'POST' })
         .then(res => res.json())
         .then(data => {
           btn.disabled = false;
-          btn.innerHTML = '<span>🚀</span> Run Full AI Autopilot';
-          openModal("⚡ AI Autopilot Completed", data);
+          btn.innerHTML = '<i data-lucide="zap"></i> Run Full AI Autopilot';
+          lucide.createIcons();
+          openModal("AI Autopilot Completed", data);
         })
         .catch(err => {
           btn.disabled = false;
-          btn.innerHTML = '<span>🚀</span> Run Full AI Autopilot';
+          btn.innerHTML = '<i data-lucide="zap"></i> Run Full AI Autopilot';
+          lucide.createIcons();
           openModal("Autopilot Error", err);
         });
     }
@@ -810,7 +874,15 @@ $ </div>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: val })
       })
-      .then(res => res.json())
+      .then(res => {
+        return res.text().then(text => {
+          try {
+            return JSON.parse(text);
+          } catch(e) {
+            return { reply: text };
+          }
+        });
+      })
       .then(data => {
         loadingMsg.innerHTML = (data.reply || 'Sorry, I could not process that request.')
           .replace(/\n/g, '<br>')
