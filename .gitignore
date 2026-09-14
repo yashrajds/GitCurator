@@ -12,3 +12,4 @@ build/
 activity_log.json
 .vscode/
 .idea/
+.vercel

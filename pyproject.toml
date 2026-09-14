@@ -18,5 +18,8 @@ dependencies = [
     "pydantic>=2.7.0"
 ]
 
+[tool.setuptools.packages.find]
+include = ["gitcurator*"]
+
 [project.scripts]
 gitcurator = "gitcurator.cli:main"
